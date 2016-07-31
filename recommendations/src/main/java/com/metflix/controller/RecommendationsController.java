@@ -3,6 +3,8 @@ package com.metflix.controller;
 import com.metflix.controller.exception.UserNotFoundException;
 import com.metflix.domain.Member;
 import com.metflix.domain.Movie;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -29,6 +31,9 @@ class RecommendationsController {
     URI memberApi;
 
     @RequestMapping("/{user}")
+    @HystrixCommand(fallbackMethod = "recommendationFallback",
+            ignoreExceptions = UserNotFoundException.class,
+            commandProperties = @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"))
     public List<Movie> findRecommendationsForUser(@PathVariable String user) throws UserNotFoundException {
         Member member = restTemplate.exchange(
                 RequestEntity.get(UriComponentsBuilder.fromUri(memberApi)
@@ -38,5 +43,12 @@ class RecommendationsController {
         if (member == null)
             throw new UserNotFoundException();
         return member.age < 17 ? kidRecommendations : adultRecommendations;
+    }
+
+    /**
+     * Should be safe for all audiences
+     */
+    List<Movie> recommendationFallback(String user) {
+        return familyRecommendations;
     }
 }
