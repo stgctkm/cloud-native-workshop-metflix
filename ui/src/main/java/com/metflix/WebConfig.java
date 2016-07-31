@@ -19,9 +19,13 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
                 .and()
+                .csrf().ignoringAntMatchers("/env**", "/refresh**")
+                .and()
                 .authorizeRequests()
+                .antMatchers("/env**", "/refresh**").permitAll()
                 .antMatchers("**").authenticated()
-                .and().addFilterBefore(new RequestDumperFilter(), ChannelProcessingFilter.class);
+                .and()
+                .addFilterBefore(new RequestDumperFilter(), ChannelProcessingFilter.class);
     }
 
     @Override
