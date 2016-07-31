@@ -27,7 +27,7 @@ class HomeController {
 
     @Value("${message:Welcome to Metflix!}")
     String message;
-    
+
     @RequestMapping("/")
     String home(Principal principal, Model model) {
         List<Movie> recommendations = restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUri(recommendationApi)
