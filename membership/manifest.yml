@@ -1,0 +1,8 @@
+applications:
+- name: membership
+  buildpack: java_buildpack
+  memory: 450M
+  path: build/libs/membership-0.0.1-SNAPSHOT.jar
+  services:
+    - config-server
+    - eureka-server
