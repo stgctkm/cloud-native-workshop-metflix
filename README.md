@@ -55,6 +55,9 @@ eureka.client.serviceUrl.defaultZone=http://peer1:8762/eureka,http://peer2:8763/
 ```
 
 ```
+cd ${WORKSHOP_HOME}/eureka-server
+./gradlew clean bootRepackage
+
 java -jar build/libs/eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=original
 java -jar build/libs/eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=replica
 ```
